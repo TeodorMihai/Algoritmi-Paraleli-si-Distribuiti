@@ -1,0 +1,45 @@
+Tema 1 APD
+Nume: Cotet Teodor Mihai
+User: teodor_mihai.cotet
+Grupa : 333CA
+
+
+varianta seriala:
+
+		Fac iteratiile rand pe rand, cand gasesc o celula 'X', incrementez intr-o alta
+	matrice toti vecinii acestei casute cu 1. (matricea state[1], tine minte cati 
+	vecini de 'X' are fiecare element.
+	Apoi in functie de reguli actualizez casutele.
+
+varianta paralela:
+		Avand in vedere ca nu pot face iteratia q fara iteratia q - 1, nu pot 
+	paraleliza intre iteratii, asadar paralizez modul in care actualizez matricea.
+	Pentru a nu consuma timp creez o singura data thredurile si imi creez segmentarea
+	matricei de mana (st, dr, paralizez doar pe linii) pentru fiecare thread in parte 
+	la inceput. (asta merge doar cand am nr de lnii > nr threaduri, pentru marici 
+	mici am implementat varianta mai simp,a de paralelizare) Acum voi descrie ce fac
+	pentru matrici  cu nr de linii >= 8.
+		La fel ca la varianta seriala, parcurg matricea si unde gasesc un 'X' iau 
+	toti vecinii casutei respective la rand si incrementez. Prolema de concurenta
+	e ca s-ar putea sa accesez un element al matricei cnt din threaduri simultan.
+		Ca sa rezolv asta stabilesc pentru fiecare thread care sunt zonele de care
+	se poate atinge din matrice (pe care le poate modifica++)(intre st si dr).
+	Dar pe respectivul thread parcurg o linie mai mult in sus si in jos (st - 1, dr + 
+	1) pentru ca pot proveni modificari in vecinii dintre st si dr din aceste casute.
+	In mod evident am nevoie de o bariera de la o iteratie la alta, dar mai am nevoie 
+	de una ca sa nu modific o casuta inainte de a se face inteorigarea pe ea.
+		Astfel in loc sa folosesc atomic sau lockuri ca sa protejez zonele de memorie 
+	(variante considerate de mine mai incete) pur si simplu parcurg nr_threaduri * 2 
+	linii in plus. 
+
+		Daca matricea are numarulde lnii <= 8 atunci folosesc alta metoda:
+	Pur si simplu pentru fiecare casuta iau toti vecinii si numar cati sunt 
+	in viata, apoi imediat actualizez in alta matrice viitoarea stare a celulei
+	respective. Las omp-ul sa-mi paralizeze forul cum vreau, si nu am probleme de 
+	concurenta pentru ca nu voi modifica niciodata din 2 threaduri difrite 
+	aceeasi casute. (fiecare thread cu casutele lui)
+
+		Grafic: am test pe fisierul in1.txt pe 70000 de iteratii facand o medie
+	intre 4 valori pentru fiecare thread + serial. Pentru matrici mari se sclaeaza mai
+	bine (de 6 ori mai speedu up cu 8 procesoare vs serial).
+

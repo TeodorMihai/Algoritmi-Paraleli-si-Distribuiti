@@ -1,0 +1,5 @@
+4
+sharpen pic1.pgm mypic1.pgm
+smooth pic2.pgm mypic2.pgm
+mean_removal pic3.pgm mypic3.pgm
+blur pic4.pgm mypic4.pgm

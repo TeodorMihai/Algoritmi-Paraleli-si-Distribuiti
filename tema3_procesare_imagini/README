@@ -1,0 +1,28 @@
+Nume: Cotet Teodor Mihai
+Grupa: 333CA
+
+Am implementat toate cerintele temei.
+
+Aflarea arborelui:
+	Am implementat lgoritmul in doua etape, mai intai fac algoritmul clasic cu mesaje
+	de sondaj (un int cu valoarea 1) si de ecout(un int cu valoarea 0), cand 
+	un nod primeste mesaj de ecou insemna ca a aflat un copil(cel de la care a primit acel mesaj)
+	Acum ca fiecare nod stie parintele si cati copii are trimit toplogia de la frunze spre radacina
+	unde o unific si apoi o trimit de la radacina la toate nodurile.
+
+Aplicare flitru:
+	In radacina citesc imginea, o impart si o trimit apoi la copii, 
+	repet procedeul pentru fiecare nod care nue  frunza. (imaginea o trimit deja bordata,
+	trimit si bordurile)
+	In frunza aplic filtrele asa cum se cere.
+	Un aspect important al acestei transmiteri este ca folosesc Ssend in loc de Send-ul clasic,
+	pentru ca altfel trimitand imagini mari exista sansa ca bufferul sistemul de operare sa se umple,
+	iar in unele cazuri programul nu s-ar termina corespunzator. Din aceasta cauza pentru imagini normale
+	(3000 x 2000) va dura in jur de un minut prelucarea, dar ea garantat se termina.
+	De asemena cand colectez datele folosesc Ssend in loc de Send din acelasi motiv.
+	Matricile pentru stocarea imaginii le aloc dinamic.
+Statistici:
+	In fiecare frunza retin cate linii am prelucrat, cand s-au terminat taskurile, radacina trimite
+	mesajele de finalizare (cu tagul 222, altul decat cel de pana acum).
+	Nodurile receptioneaza si trimit mai departe, frunzele raspund cu datele statstice,
+	nodurile intermediare combina stasticile, radacina obtinand statsica finala pe care o si scrie in fisier.
